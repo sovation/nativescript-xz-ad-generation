@@ -1,7 +1,10 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page"
-  xmlns:ui="nativescript-xz-ad-generation">
+  xmlns:XzAdG="nativescript-xz-ad-generation">
   <StackLayout>
     <Label text="banner 50x320" class="t-20 text-center c-black" textWrap="true"/>
-	  <ui:XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"/>
+	  <XzAdG:Banner locationId="48547" bannerWidth="320" bannerHeight="50"/>
+
+	  <Label text="nativead 50x320" class="t-20 text-center c-black" textWrap="true"/>
+	  <!--<XzAdG:NativeAd locationId="48547" bannerWidth="320" bannerHeight="50"/>-->
   </StackLayout>
 </Page>

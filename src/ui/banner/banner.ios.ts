@@ -1,12 +1,12 @@
 import { View, layout, Property, EventData } from "tns-core-modules/ui/core/view";
-import { XzAdGBannerBase } from "./xz-ad-g-banner-base";
-import { XzAdController } from "../../controller/xz-ad-controller";
+import { BannerBase } from "./banner-base";
+import { XzAdController } from "../../xz-ad-controller";
 import { XzAdItem } from "../../xz-ad-item";
 import { screen } from "tns-core-modules/platform";
 import mainScreen = screen.mainScreen;
 
 // iOS用広告バナービュー
-export class XzAdGBanner extends XzAdGBannerBase {
+export class Banner extends BannerBase {
 	private _ios;
 	private _adController: XzAdController;
 
@@ -46,7 +46,6 @@ export class XzAdGBanner extends XzAdGBannerBase {
 			this.width = mainScreen.widthDIPs;
 		}
 
-		console.log("load ad!!!!!!!!!!!!!!!!", this._bannerHeight, this._bannerWidth, this.width);
 		// 画面幅に合わせて広告を拡大する
 		let viewWidth = +this.width;
 		this._adScale = viewWidth / this._bannerWidth;
@@ -57,7 +56,6 @@ export class XzAdGBanner extends XzAdGBannerBase {
 
 		(<UIView>this._ios).frame = CGRectMake(0,0,this._viewWidth,this._viewHeight);
 
-		console.log("loading adcontroller!!!!!!!!");
 		this._adController = new XzAdController(<XzAdItem>{
 			type: "banner",
 			locationId: this._locationId,

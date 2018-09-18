@@ -5,4 +5,4 @@
 //   // take the ios or android .d.ts files and copy/paste them here
 // }
 
-export * from "./ui/banner/xz-ad-g-banner";
+export * from "./ui/banner/banner";

@@ -1,6 +1,6 @@
 import { Observable } from "tns-core-modules/data/observable";
 import { EventData } from "tns-core-modules/data/observable";
-import { XzAdItem } from "../xz-ad-item";
+import { XzAdItem } from "./xz-ad-item";
 
 export interface AdData extends EventData {
 	title: string;

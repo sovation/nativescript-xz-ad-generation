@@ -1,12 +1,12 @@
 import { android } from "tns-core-modules/application";
-import { XzAdController } from "../../controller/xz-ad-controller";
+import { XzAdController } from "../../xz-ad-controller";
 import { XzAdItem } from "../../xz-ad-item";
-import { XzAdGBannerBase } from "./xz-ad-g-banner-base";
+import { BannerBase } from "./banner-base";
 
 declare var com:any;
 
 // Android用広告バナービュー
-export class XzAdGBanner extends XzAdGBannerBase {
+export class Banner extends BannerBase {
 
 	private _adg: any; // com.socdm.d.adgeneration.ADG のインスタンス
 	private _adController: XzAdController;

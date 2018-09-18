@@ -1,6 +1,6 @@
 import { EventData } from "tns-core-modules/ui/core/view";
-import { XzAdGBannerBase } from "./xz-ad-g-banner-base";
-export declare class XzAdGBanner extends XzAdGBannerBase {
+import { BannerBase } from "./banner-base";
+export declare class Banner extends BannerBase {
     private _ios;
     private _adController;
     private _viewWidth;
