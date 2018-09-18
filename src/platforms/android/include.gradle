@@ -1,0 +1,7 @@
+repositories {
+	maven { url 'https://adgeneration.github.io/ADG-Android-SDK/repository' }
+}
+
+dependencies {
+	compile 'com.socdm.d.adgeneration:adg:+'
+}
