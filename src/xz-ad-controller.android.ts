@@ -1,6 +1,7 @@
-import { NativeAdData, XzAdControllerBase } from "./xz-ad-controller-base";
+import { XzAdControllerBase } from "./xz-ad-controller-base";
 import { android } from "tns-core-modules/application";
 import { EventData } from "tns-core-modules/data/observable";
+import { NativeAdData } from "./xz-ad-common";
 
 declare var com: any;
 

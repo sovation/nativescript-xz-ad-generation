@@ -1,33 +1,38 @@
-import { NativeAdData, XzAdControllerBase } from "./xz-ad-controller-base";
+import { XzAdControllerBase } from "./xz-ad-controller-base";
 import { EventData } from "tns-core-modules/data/observable";
+import { NativeAdData } from "./xz-ad-common";
 
 // iOS用の広告コントローラ
 export class XzAdController extends XzAdControllerBase {
 
 	private _adg: ADGManagerViewController;
+	private _delegate: any;
+	private _tapTargetView: WeakRef<UIView>;
 
-	public init(): this {
+	/**
+	 * ネイティブアドを初期化
+	 * @param parentView
+	 */
+	public initNativeAd(parentView: UIView): this {
+
+		if( this.adItem.type !== "native" ){
+			console.log("Unsupported ad type ==> ", this.adItem.type );
+			return null;
+		}
+
+		this._tapTargetView = new WeakRef<UIView>(parentView);
 
 		let adgparam: NSDictionary<string, string> = NSMutableDictionary.alloc<string,string>().init();
 		adgparam.setValueForKey(""+this.adItem.locationId, "locationid");
 
-		let parentView: UIView;
-		parentView = UIView.alloc().init();
 		this._adg = ADGManagerViewController.alloc().initWithAdParams(adgparam, parentView);
-		this._adg.delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
+		this._delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
+		this._adg.delegate = this._delegate;
 
-		// バナーの種類ごとに初期化
-		if( this.adItem.type === "native" ){
-			// ネイティブ広告
-			this._adg.usePartsResponse = true;
-			// インフォメーションアイコンのデフォルト表示
-			// デフォルト表示しない場合は必ずADGInformationIconViewの設置を実装してください
-			this._adg.informationIconViewDefault = false;
-
-		} else {
-			console.log("Unsupported ad type ==> ", this.adItem.type );
-			return null;
-		}
+		this._adg.usePartsResponse = true;
+		// インフォメーションアイコンのデフォルト表示
+		// デフォルト表示しない場合は必ずADGInformationIconViewの設置を実装してください
+		this._adg.informationIconViewDefault = false;
 
 		this._adg.loadRequest();
 
@@ -50,7 +55,7 @@ export class XzAdController extends XzAdControllerBase {
 
 		this._adg = ADGManagerViewController.alloc().initWithAdParams(adgparam, view);
 		this._adg.setAdScale(scale);
-		// this._adg.delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
+		this._adg.delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
 
 		this._adg.loadRequest();
 		return this;
@@ -104,6 +109,11 @@ export class XzAdController extends XzAdControllerBase {
 		if( ad.sponsored ){
 			adData.sponsor = ad.sponsored.value;
 		}
+		adData.nativeAd = ad;
+
+		if( this._tapTargetView.get() ){
+			ad.setTapEvent(this._tapTargetView.get());
+		}
 
 		this.notify(adData);
 	}
@@ -131,7 +141,12 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 		return ins;
 	}
 
+	ADGManagerViewControllerReceiveAd(adgManagerViewController: ADGManagerViewController){
+		console.log("recived ad!!!!!!!!!!!!!!");
+	}
+
 	ADGManagerViewControllerFailedToReceiveAdCode?(adgManagerViewController: ADGManagerViewController, code: kADGErrorCode): void {
+		console.log("failed.......................", code);
 
 		let failed = false;
 		switch( code ){
@@ -154,8 +169,8 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 
 		if( mediationNativeAd.isKindOfClass(ADGNativeAd.class()) ){
 			let nativeAd: ADGNativeAd = <ADGNativeAd>mediationNativeAd;
-			console.log( nativeAd.title.text );
 			this._owner.get().onReceiveNativeAd(nativeAd);
 		}
 	}
+
 }

@@ -1,7 +1,7 @@
 import { View, layout, Property, EventData } from "tns-core-modules/ui/core/view";
 import { BannerBase } from "./banner-base";
 import { XzAdController } from "../../xz-ad-controller";
-import { XzAdItem } from "../../xz-ad-item";
+import { XzAdItem } from "../../xz-ad-common";
 import { screen } from "tns-core-modules/platform";
 import mainScreen = screen.mainScreen;
 

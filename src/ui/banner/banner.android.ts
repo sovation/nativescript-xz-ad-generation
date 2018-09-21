@@ -1,6 +1,6 @@
 import { android } from "tns-core-modules/application";
 import { XzAdController } from "../../xz-ad-controller";
-import { XzAdItem } from "../../xz-ad-item";
+import { XzAdItem } from "../../xz-ad-common";
 import { BannerBase } from "./banner-base";
 
 declare var com:any;
