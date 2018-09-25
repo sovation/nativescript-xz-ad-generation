@@ -23,6 +23,11 @@ export class InformationIconView extends InformationIconViewBase {
 
 	loadNativeAd(){
 
+		if( this._infoIconView ){
+			// すでにビューが作成済でれば、削除してから再追加
+			this._infoIconView.removeFromSuperview();
+		}
+
 		this._infoIconView = ADGInformationIconView.alloc().initWithNativeAd(this._nativeAd);
 		this._ios.addSubview(this._infoIconView);
 		this._infoIconView.updateFrameFromSuperview(UIRectCorner.TopLeft);

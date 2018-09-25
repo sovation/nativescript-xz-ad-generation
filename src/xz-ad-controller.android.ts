@@ -9,6 +9,8 @@ declare var com: any;
 export class XzAdController extends XzAdControllerBase {
 
 	private _adg: any;
+	private _listener: any;
+	private _tapTargetView: WeakRef<android.view.View>;
 
 	/**
 	 * 広告のリスナーを生成して返す
@@ -51,9 +53,9 @@ export class XzAdController extends XzAdControllerBase {
 		return listener;
 	}
 
-	public init(): this {
+	public initNativeAd(parentView: any): this {
 
-		console.log("init nativead start! ==> ", this.adItem.locationId);
+		this._tapTargetView = new WeakRef<android.view.View>( parentView );
 		this._adg = new com.socdm.d.adgeneration.ADG(android.context);
 
 		this._adg.setLocationId(""+ this.adItem.locationId);
@@ -67,7 +69,6 @@ export class XzAdController extends XzAdControllerBase {
 		this._adg.setAdListener(this.getAdListener());
 
 		this._adg.start();
-		console.log("init nativead done!!");
 
 		return this;
 	}
@@ -75,7 +76,7 @@ export class XzAdController extends XzAdControllerBase {
 	// Viewを指定して初期化
 	// Androidではview=com.socdm.d.adgeneration.ADG のインスタンスになります
 	public initWithView(view: any, viewHeight: number, viewWidth: number, scale: number): this {
-		// バナーの種類ごとに初期化
+		// バナーのみサポート
 		if( this.adItem.type !== "banner" ){
 			return null;
 		}
@@ -88,13 +89,11 @@ export class XzAdController extends XzAdControllerBase {
 		let adSize = com.socdm.d.adgeneration.ADG.AdFrameSize.valueOf("FREE");
 		this._adg.setAdFrameSize(adSize.setSize(viewWidth, viewHeight));
 		this._adg.setAdScale(scale);
-		this._adg.setUsePartsResponse(true);
-		this._adg.setInformationIconViewDefault(false);
 
-		this._adg.setAdListener(this.getAdListener());
+		this._listener = this.getAdListener();
+		this._adg.setAdListener(this._listener);
 
 		this._adg.start();
-
 		return this;
 	}
 
@@ -104,6 +103,7 @@ export class XzAdController extends XzAdControllerBase {
 
 	public dispose(){
 		this._adg = null;
+		this._listener = null;
 	}
 
 	/**
@@ -118,6 +118,25 @@ export class XzAdController extends XzAdControllerBase {
 
 		if( ad.getTitle() != null ){
 			data.title = ad.getTitle().getText();
+		}
+		if( ad.getMainImage() != null ){
+			data.mainImageUrl = ad.getMainImage().getUrl();
+		}
+		if( ad.getIconImage() != null ){
+			data.iconImageUrl = ad.getIconImage().getUrl();
+		}
+		if( ad.getDesc() != null ){
+			data.description = ad.getDesc().getValue();
+		}
+		if( ad.getSponsored() != null ){
+			data.sponsor = ad.getSponsored().getValue();
+		}
+		data.nativeAd = ad;
+
+		// クリックイベント
+		if( this._tapTargetView.get() ){
+			let targetView = this._tapTargetView.get();
+			ad.setClickEvent(targetView.getContext(), targetView, null);
 		}
 
 		this.notify(data);

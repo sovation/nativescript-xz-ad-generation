@@ -142,11 +142,9 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 	}
 
 	ADGManagerViewControllerReceiveAd(adgManagerViewController: ADGManagerViewController){
-		console.log("recived ad!!!!!!!!!!!!!!");
 	}
 
 	ADGManagerViewControllerFailedToReceiveAdCode?(adgManagerViewController: ADGManagerViewController, code: kADGErrorCode): void {
-		console.log("failed.......................", code);
 
 		let failed = false;
 		switch( code ){

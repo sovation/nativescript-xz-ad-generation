@@ -6,7 +6,7 @@ import {
 	TemplateRef,
 	NgZone,
 	OnDestroy,
-	ElementRef, ViewChild
+	ElementRef, ViewChild, AfterViewInit
 } from "@angular/core";
 import { isIOS, Page } from "tns-core-modules/ui/page";
 import { AdData, XzAdItem, NativeAdData } from "../../../xz-ad-common";
@@ -35,7 +35,6 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		console.log("loading slot ", this.locationId);
 
 		let adItem = <XzAdItem>{
 			type: "native",
@@ -43,11 +42,12 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 		};
 
 		if ( adItem.type === "native" ) {
-			this._adController = new XzAdController(adItem);
-			this._adController.initNativeAd( this.getContainerView() );
-			this._adController.on("receiveNativeAd", this.onReceiveNativeAd, this);
+			setTimeout( () => {
+				this._adController = new XzAdController(adItem);
+				this._adController.initNativeAd( this.getContainerView() );
+				this._adController.on("receiveNativeAd", this.onReceiveNativeAd, this);
+			}, isIOS ? 1: 1000 ); // Androidは、遅延初期化しないとgetContainerViewがうまく動かなかった
 		}
-
 	}
 
 	ngOnDestroy() {

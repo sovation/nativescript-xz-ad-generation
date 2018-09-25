@@ -1,7 +1,8 @@
-import { android } from "tns-core-modules/application";
 import { XzAdController } from "../../xz-ad-controller";
 import { XzAdItem } from "../../xz-ad-common";
 import { BannerBase } from "./banner-base";
+import { screen } from "tns-core-modules/platform";
+import mainScreen = screen.mainScreen;
 
 declare var com:any;
 
@@ -18,7 +19,7 @@ export class Banner extends BannerBase {
 
 	// ネイティブViewを返す
 	public createNativeView(): any {
-		this._adg = new com.socdm.d.adgeneration.ADG(android.context);
+		this._adg = new com.socdm.d.adgeneration.ADG(this._context);
 		return this._adg;
 	}
 
@@ -34,10 +35,17 @@ export class Banner extends BannerBase {
 	// アドジェネ広告の読み込み
 	public loadAd() {
 
+		if( !this.width || this.width.toString() === "auto" ){
+			// 幅が未指定の場合には端末幅をセット
+			this.width = mainScreen.widthDIPs;
+		}
+
 		// 画面幅に合わせて広告を拡大する
 		let viewWidth = +this.width;
 		let adScale = viewWidth / this._bannerWidth;
 		let viewHeight = this._bannerHeight * adScale;
+
+		this.height = viewHeight;
 
 		this._adController = new XzAdController(<XzAdItem>{
 			type: "banner",
