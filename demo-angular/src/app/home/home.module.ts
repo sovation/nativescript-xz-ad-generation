@@ -9,7 +9,7 @@ import { XzAdGenerationModule } from "nativescript-xz-ad-generation/angular/xz-a
     imports: [
     	NativeScriptCommonModule,
 	    HomeRoutingModule,
-	    XzAdGenerationModule,
+	    XzAdGenerationModule, // <-- Add this!
     ],
     declarations: [
         HomeComponent

@@ -1,40 +1,72 @@
-# Your Plugin Name
-
-Add your plugin badges here. See [nativescript-urlhandler](https://github.com/hypery2k/nativescript-urlhandler) for example.
-
-Then describe what's the purpose of your plugin. 
-
-In case you develop UI plugin, this is where you can add some screenshots.
-
-## (Optional) Prerequisites / Requirements
-
-Describe the prerequisites that the user need to have installed before using your plugin. See [nativescript-firebase plugin](https://github.com/eddyverbruggen/nativescript-plugin-firebase) for example.
+# NativeScript AdGeneration Plugin
 
 ## Installation
 
-Describe your plugin installation steps. Ideally it would be something like:
 
 ```javascript
-tns plugin add <your-plugin-name>
+tns plugin add nativescript-xz-ad-generation
 ```
 
 ## Usage 
 
-Describe any usage specifics for your plugin. Give examples for Android, iOS, Angular if needed. See [nativescript-drop-down](https://www.npmjs.com/package/nativescript-drop-down) for example.
-	
-	```javascript
-    Usage code snippets here
-    ```)
+### Import Module
 
-## API
+```typescript
+@NgModule({
+    imports: [
+    	NativeScriptCommonModule,
+	    HomeRoutingModule,
+	    XzAdGenerationModule, // <-- Add this!
+    ],
+    declarations: [
+        HomeComponent
+    ],
+    schemas: [
+        NO_ERRORS_SCHEMA
+    ]
+})
+export class HomeModule { }
 
-Describe your plugin methods and properties here. See [nativescript-feedback](https://github.com/EddyVerbruggen/nativescript-feedback) for example.
-    
-| Property | Default | Description |
-| --- | --- | --- |
-| some property | property default value | property description, default values, etc.. |
-| another property | property default value | property description, default values, etc.. |
-    
+```
+
+### Banner
+
+```html
+<XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"></XzAdGBanner>
+```
+
+### Native Ad
+
+```html
+<XzAdGLayout locationId="48635"> <!-- Use 48636 for Android -->
+	<ng-template let-ad>
+		<GridLayout class="ad-container" columns="100 *" rows="auto">
+			<GridLayout rows="auto" col="0">
+				<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+				<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
+			</GridLayout>
+
+			<StackLayout col="1">
+				<Label [text]="ad.title" textWrap="true"></Label>
+				<Label [text]="ad.sponsor" class="sponsor-name"></Label>
+			</StackLayout>
+		</GridLayout>
+	</ng-template>
+</XzAdGLayout>
+```
+
+## Demo
+
+See demo-angular
+
+```
+npm run setup
+# ios
+npm run demo.ng.ios
+# android
+npm run demo.ng.android
+```
+   
 ## License
 
 Apache License Version 2.0, January 2004
