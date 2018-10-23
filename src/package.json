@@ -1,6 +1,6 @@
 {
   "name": "nativescript-xz-ad-generation",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "NativeScript AdGeneration Plugin",
   "typings": "index.d.ts",
   "nativescript": {
@@ -11,7 +11,8 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "build": "npm run tsc && npm run build.native",
+    "ngc": "node --max-old-space-size=8192 ./node_modules/.bin/ngc",
+    "build": "npm run tsc && npm run build.native && npm run ngc",
     "build.native": "node scripts/build-native.js",
     "postclone": "npm i && node scripts/postclone.js && cd ../demo && npm i && npx rimraf -- package-lock.json && cd ../src",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
@@ -32,17 +33,18 @@
     "NativeScript",
     "JavaScript",
     "Android",
-    "iOS"
+    "iOS",
+    "AdGeneration"
   ],
   "author": {
     "name": "Standing Ovation, Inc.",
     "email": "support@xz-closet.jp"
   },
   "bugs": {
-    "url": "https://github.com/hosikiti/nativescript-xz-ad-generation/issues"
+    "url": "https://github.com/sovation/nativescript-xz-ad-generation/issues"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/hosikiti/nativescript-xz-ad-generation",
+  "homepage": "https://github.com/sovation/nativescript-xz-ad-generation",
   "readmeFilename": "README.md",
   "devDependencies": {
     "tns-core-modules": "^4.2.0",
@@ -56,6 +58,7 @@
     "@angular/animations": "~6.1.0",
     "@angular/common": "~6.1.0",
     "@angular/compiler": "~6.1.0",
+    "@angular/compiler-cli": "~6.0.0",
     "@angular/core": "~6.1.0",
     "@angular/forms": "~6.1.0",
     "@angular/http": "~6.1.0",

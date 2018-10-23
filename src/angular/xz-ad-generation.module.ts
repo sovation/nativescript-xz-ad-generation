@@ -18,9 +18,9 @@ import { NativeScriptCommonModule } from "nativescript-angular/common";
 	]
 })
 export class XzAdGenerationModule {
+
 }
 
 // Angular用のセレクタ登録
 registerElement("XzAdGBanner", () => require("../ui/banner/banner").Banner);
 registerElement("XzAdGInformationIconView", () => require("../ui/information-icon-view/information-icon-view").InformationIconView);
-registerElement("XzAdGMediaView", () => require("../ui/media-view/media-view").MediaView);

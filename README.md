@@ -59,12 +59,22 @@ export class HomeModule { }
 
 See demo-angular
 
-```
+```shell
 npm run setup
 # ios
 npm run demo.ng.ios
 # android
 npm run demo.ng.android
+```
+
+## For Comitter
+
+Build & Publish
+
+```shell
+cd publish
+./pack.sh # For build
+./publish.sh # For build & publish
 ```
    
 ## License

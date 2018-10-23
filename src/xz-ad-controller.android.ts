@@ -18,7 +18,6 @@ export class XzAdController extends XzAdControllerBase {
 	 * 関数でラップしているのは、Android V8スナップショット機能を使って本番ビルドしたときに、
 	 * Androidのネイティブのクラスの継承クラスがうまく動かない問題を解決するため
 	 * https://docs.nativescript.org/plugins/ui-plugin-custom
-	 * @return {any}
 	 */
 	private getAdListener(): any {
 		class AdListener extends (com.socdm.d.adgeneration.ADGListener as { new(): any; }) {
@@ -29,12 +28,18 @@ export class XzAdController extends XzAdControllerBase {
 				if( o instanceof com.socdm.d.adgeneration.nativead.ADGNativeAd ){
 					let ad = o;
 					let controller = this._owner.get();
-					controller.onReceiveAd(ad);
+					if( controller ){
+						controller.onReceiveAd(ad);
+					}
 				}
 			}
 
-			onFailedToReceiveAd(code){
-				console.log("fail loading ad!!!!");
+			onFailedToReceiveAd(code: number){
+				console.log("fail loading ad!");
+				let controller = this._owner.get();
+				if( controller ){
+					controller.onFailed();
+				}
 			}
 
 			setOwnerAdController(owner: WeakRef<XzAdController>){
@@ -97,6 +102,12 @@ export class XzAdController extends XzAdControllerBase {
 		return this;
 	}
 
+	public start(){
+		if( this._adg ){
+			this._adg.start();
+		}
+	}
+
 	public resumeAd() {
 		// Androidでは不要
 	}
@@ -113,7 +124,8 @@ export class XzAdController extends XzAdControllerBase {
 	public onReceiveAd(ad: any){
 		let data = <NativeAdData>{
 			object: null,
-			eventName: "receiveNativeAd"
+			eventName: "receiveNativeAd",
+			locationId: this.adItem.locationId
 		};
 
 		if( ad.getTitle() != null ){
@@ -141,4 +153,13 @@ export class XzAdController extends XzAdControllerBase {
 
 		this.notify(data);
 	}
+
+	// アドの受信失敗時
+	public onFailed(){
+		this.notify(<EventData>{
+			eventName: "fail",
+			object: null
+		});
+	}
+
 }

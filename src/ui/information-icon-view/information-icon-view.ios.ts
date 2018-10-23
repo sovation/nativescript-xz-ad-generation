@@ -7,7 +7,7 @@ export class InformationIconView extends InformationIconViewBase {
 	private _ios: UIView;
 
 	createNativeView(): Object {
-		let uiview: UIView = UIView.alloc().init();
+		let uiview: UIView = UIView.alloc().initWithFrame(CGRectMake(0,0,35, 15));
 		uiview.contentMode = UIViewContentMode.ScaleAspectFit;
 		this._ios = uiview;
 		return this._ios;
@@ -28,9 +28,9 @@ export class InformationIconView extends InformationIconViewBase {
 			this._infoIconView.removeFromSuperview();
 		}
 
-		this._infoIconView = ADGInformationIconView.alloc().initWithNativeAd(this._nativeAd);
+		this._infoIconView = ADGInformationIconView.alloc().initWithNativeAdExpandable(this._nativeAd, true);
 		this._ios.addSubview(this._infoIconView);
-		this._infoIconView.updateFrameFromSuperview(UIRectCorner.TopLeft);
+		this._infoIconView.updateFrameFromSuperview(UIRectCorner.BottomRight);
 
 		// 自分自身のサイズをInformationIconViewのサイズに合わせる
 		this.width = this._infoIconView.frame.size.width;

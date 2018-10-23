@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { RouterExtensions } from "nativescript-angular";
+import { isIOS } from "tns-core-modules/platform";
 
 @Component({
 	selector: "Home",
@@ -8,11 +10,15 @@ import { Component, OnInit } from "@angular/core";
 })
 export class HomeComponent implements OnInit {
 
-	constructor() {
-		// Use the component constructor to inject providers.
+	nativeAdLocationId: number = isIOS ? 44942 : 44941;
+
+	constructor(private routerExt: RouterExtensions) {
 	}
 
 	ngOnInit(): void {
-		// Init your component properties here.
+	}
+
+	onTapListViewSample(){
+		this.routerExt.navigate(["home/listview"]);
 	}
 }

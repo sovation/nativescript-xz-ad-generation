@@ -68,7 +68,7 @@ export class XzAdController extends XzAdControllerBase {
 		}
 	}
 
-	// 広告表示を再開
+	// 広告をリロードしてローテーションを再開
 	public resumeAd(){
 		if( this._adg ){
 			this._adg.resumeRefresh();
@@ -83,6 +83,7 @@ export class XzAdController extends XzAdControllerBase {
 	public onReceiveNativeAd(ad: ADGNativeAd){
 		let adData = <NativeAdData>{
 			eventName: "receiveNativeAd",
+			locationId: this.adItem.locationId,
 			object: null
 		};
 
@@ -153,11 +154,13 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 			case kADGErrorCode.ExceedLimit: console.log("exceed limit"); failed=true; break;
 			default:
 				console.log("retry...");
-				this._owner.get().loadRequest();
+				if( this._owner && this._owner.get() ){
+					this._owner.get().loadRequest();
+				}
 				break;
 		}
 
-		if(failed){
+		if(failed && this._owner && this._owner.get() ){
 			this._owner.get().onFailed();
 		}
 
@@ -167,7 +170,9 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 
 		if( mediationNativeAd.isKindOfClass(ADGNativeAd.class()) ){
 			let nativeAd: ADGNativeAd = <ADGNativeAd>mediationNativeAd;
-			this._owner.get().onReceiveNativeAd(nativeAd);
+			if( this._owner && this._owner.get() ){
+				this._owner.get().onReceiveNativeAd(nativeAd);
+			}
 		}
 	}
 

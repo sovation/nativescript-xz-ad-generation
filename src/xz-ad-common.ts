@@ -27,8 +27,9 @@ export interface AdData extends EventData {
 	ctaText: string; // Call to Action文字列
 	linkUrl: string; // クリック時のリンク先URL
 	sponsor: string; // 広告主情報,
+	locationId: number;
 }
 
 export interface NativeAdData extends AdData {
-	nativeAd: any; // ネイティブ側で返されたAdDataオブジェクト
+	nativeAd?: any; // ネイティブ側で返されたAdDataオブジェクト
 }

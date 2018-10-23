@@ -3,11 +3,13 @@
 </ActionBar>
 
 <StackLayout class="page">
+	<Button text="ListView sample" (tap)="onTapListViewSample()"></Button>
+
 	<Label text="banner 50x320"></Label>
 	<XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"></XzAdGBanner>
 
 	<Label text="native ad"></Label>
-	<XzAdGLayout locationId="70919">
+	<XzAdGLayout [locationId]="nativeAdLocationId">
 		<ng-template let-ad>
 			<GridLayout class="ad-container" columns="100 *" rows="auto">
 				<GridLayout rows="auto" col="0">

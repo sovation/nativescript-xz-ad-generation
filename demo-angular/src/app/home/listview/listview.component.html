@@ -1,0 +1,40 @@
+<ActionBar class="action-bar">
+	<Label class="action-bar-title" text="ListView sample"></Label>
+</ActionBar>
+
+<GridLayout rows="*">
+	<ListView [items]="items" [itemTemplateSelector]="templateSelector" #listview>
+		<ng-template nsTemplateKey="item" let-item="item">
+			<StackLayout>
+				<Label text="{{ item.data }}" padding="16"></Label>
+			</StackLayout>
+		</ng-template>
+
+		<ng-template nsTemplateKey="ad" let-item="item" let-index="index">
+			<StackLayout>
+				<XzAdGLayout [locationId]="item.locationId" (updateAd)="onUpdateAd($event)" [id]="index">
+					<ng-template let-ad>
+						<GridLayout class="ad-container" columns="100 *" rows="auto" *ngIf="ad.title">
+							<GridLayout rows="auto" col="0">
+								<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+							</GridLayout>
+
+							<GridLayout col="1" rows="auto * auto">
+								<Label [text]="ad.title || '-'" textWrap="true"></Label>
+								<DockLayout row="2" columns="auto * auto" stretchLastChild="false">
+									<Label dock="left" text="{{ ad.sponsor || '-'}}" class="date" textWrap="true"></Label>
+									<XzAdGInformationIconView dock="right" col="2" class="information-icon" [nativeAd]="ad.nativeAd"></XzAdGInformationIconView>
+								</DockLayout>
+
+							</GridLayout>
+						</GridLayout>
+					</ng-template>
+				</XzAdGLayout>
+			</StackLayout>
+		</ng-template>
+
+		<ng-template nsTemplateKey="no-ad">
+			<StackLayout></StackLayout>
+		</ng-template>
+	</ListView>
+</GridLayout>
