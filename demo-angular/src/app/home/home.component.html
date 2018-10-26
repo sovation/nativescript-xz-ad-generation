@@ -24,6 +24,15 @@
 			</GridLayout>
 		</ng-template>
 	</XzAdGLayout>
+
+	<Label text="freak out"></Label>
+	<XzAdGLayout [locationId]="nativeAdHtmlLocationId">
+		<ng-template let-ad>
+			<GridLayout class="ad-container" columns="100 *" rows="200">
+			</GridLayout>
+		</ng-template>
+	</XzAdGLayout>
+
 	<Label text="end of ads"></Label>
 
 </StackLayout>

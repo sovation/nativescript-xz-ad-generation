@@ -71,6 +71,12 @@ export class XzAdController extends XzAdControllerBase {
 		this._adg.setUsePartsResponse(true);
 		this._adg.setInformationIconViewDefault(false);
 
+		//// HTMLテンプレートを使用したネイティブ広告を表示のためにはaddViewする必要があります
+		//         adContainer = (FrameLayout) findViewById(R.id.ad_container);
+		//         adContainer.addView(adg);
+		parentView.addView(this._adg);
+		console.log("native view is added");
+
 		this._adg.setAdListener(this.getAdListener());
 
 		this._adg.start();

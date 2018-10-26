@@ -24,10 +24,16 @@ export class XzAdController extends XzAdControllerBase {
 
 		let adgparam: NSDictionary<string, string> = NSMutableDictionary.alloc<string,string>().init();
 		adgparam.setValueForKey(""+this.adItem.locationId, "locationid");
+		adgparam.setValueForKey(ADGAdType.kADG_AdType_Free, "adtype");
 
 		this._adg = ADGManagerViewController.alloc().initWithAdParams(adgparam, parentView);
 		this._delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
 		this._adg.delegate = this._delegate;
+
+		// HTMLテンプレートを使用したネイティブ広告を表示するためには以下のように配置するViewを指定します
+		this._adg.adSize = CGSizeMake(300, 200);
+		parentView.contentMode = UIViewContentMode.ScaleAspectFit;
+		this._adg.addAdContainerView(parentView.subviews.objectAtIndex(0));
 
 		this._adg.usePartsResponse = true;
 		// インフォメーションアイコンのデフォルト表示
@@ -54,7 +60,7 @@ export class XzAdController extends XzAdControllerBase {
 		adgparam.setValueForKey(viewHeight, "h");
 
 		this._adg = ADGManagerViewController.alloc().initWithAdParams(adgparam, view);
-		this._adg.setAdScale(scale);
+		this._adg.adScale = scale;
 		this._adg.delegate = ADGManagerViewControllerDelegateImpl.initWithOwner(new WeakRef(this));
 
 		this._adg.loadRequest();

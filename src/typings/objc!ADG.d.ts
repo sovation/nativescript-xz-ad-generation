@@ -1,13 +1,4 @@
 
-declare const enum ADGADVIEW_TARGET {
-
-	BOTH = 0,
-
-	FRONT = 1,
-
-	BACK = 2
-}
-
 declare const enum ADGAdType {
 
 	kADG_AdType_Sp = 0,
@@ -39,7 +30,15 @@ declare class ADGAdWebView extends UIView implements UIWebViewDelegate {
 
 	static new(): ADGAdWebView; // inherited from NSObject
 
+	readonly adWebView: UIWebView;
+
+	checkingWebViewFillerAd: boolean;
+
 	delegate: any;
+
+	isInterstitial: boolean;
+
+	mraidEnabled: boolean;
 
 	scrollEnabled: boolean;
 
@@ -55,21 +54,11 @@ declare class ADGAdWebView extends UIView implements UIWebViewDelegate {
 
 	readonly  // inherited from NSObjectProtocol
 
-	backAdWebView(): UIWebView;
-
 	class(): typeof NSObject;
 
 	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	disableCheckingWebViewFillerAd(): void;
-
-	frontAdWebView(): UIWebView;
-
-	getBackIndex(): number;
-
-	getFrontIndex(): number;
-
-	isClicked(target: ADGADVIEW_TARGET): boolean;
+	isClicked(): boolean;
 
 	isEqual(object: any): boolean;
 
@@ -77,11 +66,9 @@ declare class ADGAdWebView extends UIView implements UIWebViewDelegate {
 
 	isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	isNoAdCallDelegate(target: ADGADVIEW_TARGET, callDelegate: boolean): boolean;
+	isNoAd(callDelegate: boolean): boolean;
 
-	loadRequest(request: NSURLRequest): void;
-
-	loadRequestTarget(request: NSURLRequest, target: ADGADVIEW_TARGET): void;
+	loadHTMLStringBaseURL(HTML: string, baseURL: NSURL): void;
 
 	performSelector(aSelector: string): any;
 
@@ -107,14 +94,6 @@ declare class ADGAdWebView extends UIView implements UIWebViewDelegate {
 
 	stopLoading(): void;
 
-	stringByEvaluatingJavaScriptFromString(string: string): void;
-
-	stringByEvaluatingJavaScriptFromStringTarget(string: string, target: ADGADVIEW_TARGET): string;
-
-	swapAdWebView(): void;
-
-	webViewAtIndex(index: number): UIWebView;
-
 	webViewDidFailLoadWithError(webView: UIWebView, error: NSError): void;
 
 	webViewDidFinishLoad(webView: UIWebView): void;
@@ -126,11 +105,11 @@ declare class ADGAdWebView extends UIView implements UIWebViewDelegate {
 
 interface ADGAdWebViewDelegate {
 
-	adgAdWebViewDidFailLoadWithErrorSource?(webView: UIWebView, error: NSError, source: ADGADVIEW_TARGET): void;
+	adgAdWebViewDidFailLoadWithError?(webView: UIWebView, error: NSError): void;
 
-	adgAdWebViewDidFinishLoadSource?(webView: UIWebView, source: ADGADVIEW_TARGET): void;
+	adgAdWebViewDidFinishLoad?(webView: UIWebView): void;
 
-	adgAdWebViewShouldStartLoadWithRequestNavigationTypeSource?(webView: UIWebView, request: NSURLRequest, navigationType: UIWebViewNavigationType, source: ADGADVIEW_TARGET): boolean;
+	adgAdWebViewShouldStartLoadWithRequestNavigationType?(webView: UIWebView, request: NSURLRequest, navigationType: UIWebViewNavigationType): boolean;
 
 	adgNoAd?(): void;
 }
@@ -165,6 +144,15 @@ declare class ADGData extends NSObject {
 	constructor(o: { dictionary: NSDictionary<any, any>; });
 
 	initWithDictionary(dict: NSDictionary<any, any>): this;
+}
+
+declare const enum ADGHeaderBiddingParamKeys {
+
+	AmznBidID = 0,
+
+	AmznHostName = 1,
+
+	AmznSlots = 2
 }
 
 declare class ADGImage extends NSObject {
@@ -289,25 +277,17 @@ declare class ADGInterstitial extends NSObject implements ADGManagerViewControll
 
 	rootViewController: UIViewController;
 
-	ADGBrowserViewControllerClose(): void;
-
-	ADGBrowserViewControllerShow(): void;
-
-	ADGManagerViewControllerCompleteRewardAd(): void;
-
 	ADGManagerViewControllerDidTapAd(adgManagerViewController: ADGManagerViewController): void;
 
 	ADGManagerViewControllerFailInImpression(adgManagerViewController: ADGManagerViewController): void;
-
-	ADGManagerViewControllerFailedToReceiveAd(adgManagerViewController: ADGManagerViewController): void;
 
 	ADGManagerViewControllerFailedToReceiveAdCode(adgManagerViewController: ADGManagerViewController, code: kADGErrorCode): void;
 
 	ADGManagerViewControllerFinishImpression(adgManagerViewController: ADGManagerViewController): void;
 
-	ADGManagerViewControllerNeedConnection(adgManagerViewController: ADGManagerViewController): void;
-
 	ADGManagerViewControllerOpenUrl(adgManagerViewController: ADGManagerViewController): void;
+
+	ADGManagerViewControllerReadyMediationMediation(adgManagerViewController: ADGManagerViewController, mediation: any): void;
 
 	ADGManagerViewControllerReceiveAd(adgManagerViewController: ADGManagerViewController): void;
 
@@ -315,11 +295,11 @@ declare class ADGInterstitial extends NSObject implements ADGManagerViewControll
 
 	ADGManagerViewControllerReceiveAdMediationNativeAds(adgManagerViewController: ADGManagerViewController, mediationNativeAds: NSArray<any>): void;
 
-	ADGManagerViewControllerReceiveFiller(adgManagerViewController: ADGManagerViewController): void;
+	addHeaderBiddingParamWithKeyValue(key: ADGHeaderBiddingParamKeys, value: string): void;
 
-	ADGVideoViewAppear(): void;
+	addHeaderBiddingParamsWithAmznAdResponse(adResponse: any): void;
 
-	ADGVideoViewDisappear(): void;
+	addRequestOptionParamWithCustomKeyValue(key: string, value: string): void;
 
 	dismiss(): void;
 
@@ -470,7 +450,13 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 	static setLon(lon: number): void;
 
-	adCount: number;
+	adOrigin: CGPoint;
+
+	adScale: number;
+
+	adSize: CGSize;
+
+	adType: ADGAdType;
 
 	adgAdView: boolean;
 
@@ -478,7 +464,11 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 	delegate: any;
 
+	expandFrame: boolean;
+
 	informationIconViewDefault: boolean;
+
+	isInterstitial: boolean;
 
 	locationid: string;
 
@@ -494,13 +484,23 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 	constructor(o: { adParams: NSDictionary<any, any>; adView: UIView; });
 
+	constructor(o: { locationID: string; adType: ADGAdType; rootViewController: UIViewController; });
+
+	addAdContainerView(adContainerView: UIView): void;
+
+	addHeaderBiddingParamWithKeyValue(key: ADGHeaderBiddingParamKeys, value: string): void;
+
+	addHeaderBiddingParamsWithAmznAdResponse(adResponse: any): void;
+
 	addMediationNativeAdView(mediationNativeAdView: UIView): void;
 
-	adgAdWebViewDidFailLoadWithErrorSource(webView: UIWebView, error: NSError, source: ADGADVIEW_TARGET): void;
+	addRequestOptionParamWithCustomKeyValue(key: string, value: string): void;
 
-	adgAdWebViewDidFinishLoadSource(webView: UIWebView, source: ADGADVIEW_TARGET): void;
+	adgAdWebViewDidFailLoadWithError(webView: UIWebView, error: NSError): void;
 
-	adgAdWebViewShouldStartLoadWithRequestNavigationTypeSource(webView: UIWebView, request: NSURLRequest, navigationType: UIWebViewNavigationType, source: ADGADVIEW_TARGET): boolean;
+	adgAdWebViewDidFinishLoad(webView: UIWebView): void;
+
+	adgAdWebViewShouldStartLoadWithRequestNavigationType(webView: UIWebView, request: NSURLRequest, navigationType: UIWebViewNavigationType): boolean;
 
 	adgNoAd(): void;
 
@@ -524,6 +524,8 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 	initWithAdParamsAdView(params: NSDictionary<any, any>, parentView: UIView): this;
 
+	initWithLocationIDAdTypeRootViewController(locationID: string, adType: ADGAdType, rootViewController: UIViewController): this;
+
 	isReadyForInterstitial(): boolean;
 
 	loadRequest(): void;
@@ -532,11 +534,7 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 	resumeRefresh(): void;
 
-	setAdOrigin(origin: CGPoint): void;
-
-	setAdScale(scale: number): void;
-
-	setAdType(type: ADGAdType): void;
+	resumeRefreshTimer(): void;
 
 	setAutomaticallyRemoveOnReload(view: UIView): void;
 
@@ -581,37 +579,23 @@ declare class ADGManagerViewController extends UIViewController implements ADGAd
 
 interface ADGManagerViewControllerDelegate {
 
-	ADGBrowserViewControllerClose?(): void;
-
-	ADGBrowserViewControllerShow?(): void;
-
-	ADGManagerViewControllerCompleteRewardAd?(): void;
-
 	ADGManagerViewControllerDidTapAd?(adgManagerViewController: ADGManagerViewController): void;
 
 	ADGManagerViewControllerFailInImpression?(adgManagerViewController: ADGManagerViewController): void;
-
-	ADGManagerViewControllerFailedToReceiveAd?(adgManagerViewController: ADGManagerViewController): void;
 
 	ADGManagerViewControllerFailedToReceiveAdCode?(adgManagerViewController: ADGManagerViewController, code: kADGErrorCode): void;
 
 	ADGManagerViewControllerFinishImpression?(adgManagerViewController: ADGManagerViewController): void;
 
-	ADGManagerViewControllerNeedConnection?(adgManagerViewController: ADGManagerViewController): void;
-
 	ADGManagerViewControllerOpenUrl?(adgManagerViewController: ADGManagerViewController): void;
+
+	ADGManagerViewControllerReadyMediationMediation?(adgManagerViewController: ADGManagerViewController, mediation: any): void;
 
 	ADGManagerViewControllerReceiveAd?(adgManagerViewController: ADGManagerViewController): void;
 
 	ADGManagerViewControllerReceiveAdMediationNativeAd?(adgManagerViewController: ADGManagerViewController, mediationNativeAd: any): void;
 
 	ADGManagerViewControllerReceiveAdMediationNativeAds?(adgManagerViewController: ADGManagerViewController, mediationNativeAds: NSArray<any>): void;
-
-	ADGManagerViewControllerReceiveFiller?(adgManagerViewController: ADGManagerViewController): void;
-
-	ADGVideoViewAppear?(): void;
-
-	ADGVideoViewDisappear?(): void;
 }
 declare var ADGManagerViewControllerDelegate: {
 
@@ -696,9 +680,9 @@ declare class ADGNativeAd extends NSObject {
 
 	readonly mainImage: ADGImage;
 
-	readonly multiNativeAdBeacon: string;
-
 	readonly nativeAdType: ADGNativeAdType;
+
+	rootViewController: UIViewController;
 
 	readonly sponsored: ADGData;
 
@@ -768,6 +752,8 @@ declare class ADGNativeInterfaceChild extends NSObject {
 
 	viewCon: UIViewController;
 
+	viewablePayment: boolean;
+
 	checkOSVersion(): boolean;
 
 	loadProcess(): boolean;
@@ -783,6 +769,8 @@ declare class ADGNativeInterfaceChild extends NSObject {
 	sendFailedToReceiveAd(): void;
 
 	sendOpenUrl(): void;
+
+	sendReadyMediation(mediation: any): void;
 
 	sendReceiveAd(): void;
 
@@ -807,8 +795,6 @@ interface ADGNativeInterfaceChildDelegate {
 
 	ADGNativeInterfaceChildCompleteMovieAd?(): void;
 
-	ADGNativeInterfaceChildCompleteRewardAd?(response: NSDictionary<any, any>): void;
-
 	ADGNativeInterfaceChildDidTapAd?(): void;
 
 	ADGNativeInterfaceChildErrorClassName?(): void;
@@ -816,6 +802,8 @@ interface ADGNativeInterfaceChildDelegate {
 	ADGNativeInterfaceChildFailedToReceiveAd?(): void;
 
 	ADGNativeInterfaceChildOpenUrl?(): void;
+
+	ADGNativeInterfaceChildReadyMediation?(mediation: any): void;
 
 	ADGNativeInterfaceChildReceiveAd?(): void;
 
@@ -845,6 +833,8 @@ declare class ADGSettings extends NSObject {
 	static fillerAdCheckEnable: boolean;
 
 	static videoAdsPlaybackSoundInSilentModeEnabled: boolean;
+
+	static videoAudioType: ADGVideoAudioType;
 }
 
 declare class ADGTitle extends NSObject {
@@ -879,6 +869,15 @@ declare class ADGVideo extends NSObject {
 	constructor(o: { dictionary: NSDictionary<any, any>; });
 
 	initWithDictionary(dict: NSDictionary<any, any>): this;
+}
+
+declare const enum ADGVideoAudioType {
+
+	Mix = 0,
+
+	Solo = 1,
+
+	SoloForce = 2
 }
 
 declare const enum kADGErrorCode {

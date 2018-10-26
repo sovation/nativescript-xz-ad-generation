@@ -67,6 +67,8 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 		let adItem = <XzAdItem>{
 			type: "native",
 			locationId: this.locationId,
+			width: 320,
+			height: 100
 		};
 
 		if ( adItem.type === "native" ) {
