@@ -119,7 +119,17 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 
 	getContainerView(): any {
 		let container = <StackLayout>this.adContainerRef.nativeElement;
-		return container.ios || container.android;
+
+		let view = container.getChildAt(0);
+		if( view ){
+			if( isIOS ){
+				let nativeView = view.ios as UIView;
+				container.height = nativeView.frame.size.height;
+			}
+			return view;
+		} else {
+			throw new Error("no view found for ad");
+		}
 	}
 
 }
