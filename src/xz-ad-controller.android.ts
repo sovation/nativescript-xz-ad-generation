@@ -2,6 +2,9 @@ import { XzAdControllerBase } from "./xz-ad-controller-base";
 import { android } from "tns-core-modules/application";
 import { EventData } from "tns-core-modules/data/observable";
 import { NativeAdData } from "./xz-ad-common";
+import {View} from "tns-core-modules/ui/core/view";
+import {screen} from "tns-core-modules/platform";
+import mainScreen = screen.mainScreen;
 
 declare var com: any;
 
@@ -58,26 +61,34 @@ export class XzAdController extends XzAdControllerBase {
 		return listener;
 	}
 
-	public initNativeAd(parentView: any): this {
+	/**
+	 * Init NativeAd with View
+	 * @param parentView
+	 */
+	public initNativeAd(parentView: View): this {
 
-		this._tapTargetView = new WeakRef<android.view.View>( parentView );
+		let targetView = parentView.android as android.view.View;
+
+		this._tapTargetView = new WeakRef<android.view.View>( targetView );
 		this._adg = new com.socdm.d.adgeneration.ADG(android.context);
 
 		this._adg.setLocationId(""+ this.adItem.locationId);
 
+		// 広告の表示サイズを計算
+		let adWidth = mainScreen.widthDIPs;
+		adWidth -= (+parentView.style.paddingLeft + +parentView.style.paddingRight); // 余白考慮
+		let adHeight = (this.adItem.height / this.adItem.width) * adWidth;
+
 		// フリーサイズとしてバナーのサイズ設定
 		let adSize = com.socdm.d.adgeneration.ADG.AdFrameSize.valueOf("FREE");
-		this._adg.setAdFrameSize(adSize.setSize(this.adItem.width, this.adItem.height));
+		this._adg.setAdFrameSize(adSize.setSize(adWidth, adHeight));
 		this._adg.setUsePartsResponse(true);
 		this._adg.setInformationIconViewDefault(false);
+		this._adg.setAdListener(this.getAdListener());
 
 		//// HTMLテンプレートを使用したネイティブ広告を表示のためにはaddViewする必要があります
-		//         adContainer = (FrameLayout) findViewById(R.id.ad_container);
-		//         adContainer.addView(adg);
-		parentView.addView(this._adg);
-		console.log("native view is added");
+		(<any>targetView).addView(this._adg);
 
-		this._adg.setAdListener(this.getAdListener());
 
 		this._adg.start();
 

@@ -32,7 +32,6 @@ export class XzAdController extends XzAdControllerBase {
 		let parentHeight = targetView.frame.size.height;
 		let adWidth = parentWidth - (+parentView.style.paddingLeft) - (+parentView.style.paddingRight);
 		let adHeight = parentHeight/parentWidth * adWidth;
-		// console.log("parent view size ", targetView.frame.size.height, targetView.frame.size.width);
 
 		this._tapTargetView = new WeakRef<UIView>(targetView);
 
