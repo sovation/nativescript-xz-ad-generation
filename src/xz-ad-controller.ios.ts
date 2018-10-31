@@ -32,6 +32,7 @@ export class XzAdController extends XzAdControllerBase {
 		let parentHeight = targetView.frame.size.height;
 		let pl = isNaN(+parentView.style.paddingLeft) ? 0 : +parentView.style.paddingLeft;
 		let pr = isNaN(+parentView.style.paddingRight) ? 0 : +parentView.style.paddingRight;
+		let pt = isNaN(+parentView.style.paddingTop) ? 0 : +parentView.style.paddingTop;
 		let adWidth = parentWidth - (pl+pr); // 表示領域から余白を除いた文を広告領域とする
 		let adHeight = parentHeight/parentWidth * adWidth;
 
@@ -53,7 +54,7 @@ export class XzAdController extends XzAdControllerBase {
 		// HTMLテンプレートを使用したネイティブ広告を表示するためには以下のように配置するViewを指定します
 		this._adg.adSize = CGSizeMake(adWidth, adHeight);
 		// コンテナのpaddingを考慮(これがないと、常にx,y=0,0からの描画になります)
-		this._adg.adOrigin = CGPointMake(+parentView.style.paddingLeft, +parentView.style.paddingTop);
+		this._adg.adOrigin = CGPointMake(pl, pt);
 
 		this._adg.loadRequest();
 
