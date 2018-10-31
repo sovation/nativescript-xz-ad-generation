@@ -19,6 +19,9 @@ export interface UpdateAdData extends EventData {
 	adAvailable: boolean; // 広告が利用可能か
 }
 
+const DEFAULT_AD_WIDTH = 320;
+const DEFAULT_AD_HEIGHT = 100;
+
 @Component({
 	moduleId: module.id,
 	selector: "XzAdGLayout",
@@ -27,7 +30,8 @@ export interface UpdateAdData extends EventData {
 export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 	@ViewChild("adContainer") adContainerRef: ElementRef;
 	@Input() locationId: number;
-	@Input() width: number;
+	@Input() adWidth: number;
+	@Input() adHeight: number;
 	@Input() id: number;
 	@Output() updateAd: EventEmitter<UpdateAdData> = new EventEmitter<UpdateAdData>();
 	@ContentChild(TemplateRef) templateRef;
@@ -67,8 +71,8 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 		let adItem = <XzAdItem>{
 			type: "native",
 			locationId: this.locationId,
-			width: 320,
-			height: 100
+			width: this.adWidth || DEFAULT_AD_WIDTH,
+			height: this.adHeight || DEFAULT_AD_HEIGHT
 		};
 
 		if ( adItem.type === "native" ) {

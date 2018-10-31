@@ -2,41 +2,52 @@
 	<Label class="action-bar-title" text="NS Ad Generation"></Label>
 </ActionBar>
 
-<ScrollView>
-	<StackLayout class="page" >
-		<Button text="ListView sample" (tap)="onTapListViewSample()"></Button>
+<StackLayout>
+	<ScrollView>
+		<StackLayout class="page" paddingTop="16">
+			<Button text="ListView sample" (tap)="onTapListViewSample()"></Button>
 
-		<Label text="banner 50x320"></Label>
-		<XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"></XzAdGBanner>
+			<Label text="banner 50x320"></Label>
+			<XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"></XzAdGBanner>
 
-		<Label text="native ad"></Label>
-		<XzAdGLayout [locationId]="nativeAdLocationId">
-			<ng-template let-ad>
-				<GridLayout class="ad-container" columns="100 *" rows="auto">
-					<GridLayout rows="auto" col="0">
-						<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
-						<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
+			<Label text="native ad"></Label>
+			<XzAdGLayout [locationId]="nativeAdLocationId">
+				<ng-template let-ad>
+					<GridLayout class="ad-container" columns="100 *" rows="auto">
+						<GridLayout rows="auto" col="0">
+							<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+							<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
+						</GridLayout>
+
+						<StackLayout col="1">
+							<Label [text]="ad.title" textWrap="true"></Label>
+							<Label [text]="ad.sponsor" class="sponsor-name"></Label>
+						</StackLayout>
 					</GridLayout>
+				</ng-template>
+			</XzAdGLayout>
 
-					<StackLayout col="1">
-						<Label [text]="ad.title" textWrap="true"></Label>
-						<Label [text]="ad.sponsor" class="sponsor-name"></Label>
-					</StackLayout>
-				</GridLayout>
-			</ng-template>
-		</XzAdGLayout>
+			<Label text="freak out"></Label>
+			<XzAdGLayout [locationId]="nativeAdHtmlLocationId">
+				<ng-template let-ad>
+					<GridLayout class="ad-container">
+						<GridLayout columns="100 *" rows="auto">
+							<GridLayout rows="auto" col="0">
+								<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+								<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
+							</GridLayout>
 
-		<Label text="freak out"></Label>
-		<XzAdGLayout [locationId]="nativeAdHtmlLocationId">
-			<ng-template let-ad>
-				<GridLayout class="ad-container" height="116">
-					<GridLayout columns="100 *" rows="auto">
+							<StackLayout col="1">
+								<Label [text]="ad.title" textWrap="true"></Label>
+								<Label [text]="ad.sponsor" class="sponsor-name"></Label>
+							</StackLayout>
+						</GridLayout>
 					</GridLayout>
-				</GridLayout>
-			</ng-template>
-		</XzAdGLayout>
+				</ng-template>
+			</XzAdGLayout>
 
-		<Label text="end of ads"></Label>
+			<Label text="end of ads"></Label>
 
-	</StackLayout>
-</ScrollView>
+		</StackLayout>
+	</ScrollView>
+</StackLayout>

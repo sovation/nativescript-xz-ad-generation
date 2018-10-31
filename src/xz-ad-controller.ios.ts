@@ -30,7 +30,9 @@ export class XzAdController extends XzAdControllerBase {
 		let targetView = parentView.ios as UIView;
 		let parentWidth = targetView.frame.size.width;
 		let parentHeight = targetView.frame.size.height;
-		let adWidth = parentWidth - (+parentView.style.paddingLeft) - (+parentView.style.paddingRight);
+		let pl = isNaN(+parentView.style.paddingLeft) ? 0 : +parentView.style.paddingLeft;
+		let pr = isNaN(+parentView.style.paddingRight) ? 0 : +parentView.style.paddingRight;
+		let adWidth = parentWidth - (pl+pr); // 表示領域から余白を除いた文を広告領域とする
 		let adHeight = parentHeight/parentWidth * adWidth;
 
 		this._tapTargetView = new WeakRef<UIView>(targetView);

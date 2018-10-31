@@ -12,20 +12,22 @@
 
 		<ng-template nsTemplateKey="ad" let-item="item" let-index="index">
 			<StackLayout>
-				<XzAdGLayout [locationId]="item.locationId" (updateAd)="onUpdateAd($event)" [id]="index">
+				<XzAdGLayout [locationId]="item.locationId" (updateAd)="onUpdateAd($event)" [id]="index" [adWidth]="320" [adHeight]="50">
 					<ng-template let-ad>
-						<GridLayout class="ad-container" columns="100 *" rows="auto" *ngIf="ad.title">
-							<GridLayout rows="auto" col="0">
-								<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
-							</GridLayout>
+						<GridLayout class="ad-container">
+							<GridLayout columns="100 *" rows="100">
+								<GridLayout rows="auto" col="0">
+									<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+								</GridLayout>
 
-							<GridLayout col="1" rows="auto * auto">
-								<Label [text]="ad.title || '-'" textWrap="true"></Label>
-								<DockLayout row="2" columns="auto * auto" stretchLastChild="false">
-									<Label dock="left" text="{{ ad.sponsor || '-'}}" class="date" textWrap="true"></Label>
-									<XzAdGInformationIconView dock="right" col="2" class="information-icon" [nativeAd]="ad.nativeAd"></XzAdGInformationIconView>
-								</DockLayout>
+								<GridLayout col="1" rows="auto * auto">
+									<Label [text]="ad.title || ''" textWrap="true"></Label>
+									<DockLayout row="2" columns="auto * auto" stretchLastChild="false">
+										<Label dock="left" text="{{ ad.sponsor || ''}}" class="date" textWrap="true"></Label>
+										<XzAdGInformationIconView dock="right" col="2" class="information-icon" [nativeAd]="ad.nativeAd"></XzAdGInformationIconView>
+									</DockLayout>
 
+								</GridLayout>
 							</GridLayout>
 						</GridLayout>
 					</ng-template>

@@ -11,7 +11,8 @@ export declare class XzAdGLayoutComponent implements OnInit, OnDestroy {
     private ngZone;
     adContainerRef: ElementRef;
     locationId: number;
-    width: number;
+    adWidth: number;
+    adHeight: number;
     id: number;
     updateAd: EventEmitter<UpdateAdData>;
     templateRef: any;

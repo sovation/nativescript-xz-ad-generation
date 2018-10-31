@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UpdateAdData } from "nativescript-xz-ad-generation/angular/components/xz-ad-g-layout/xz-ad-g-layout.component";
 import { ListView } from "tns-core-modules/ui/list-view";
+import { isIOS } from "tns-core-modules/platform";
 
 interface Item {
 	template: "item" | "ad" | "no-ad";
@@ -12,6 +13,7 @@ interface Item {
 @Component({
 	moduleId: module.id,
 	templateUrl: "./listview.component.html",
+	styleUrls: ["./listview.component.css"]
 })
 export class ListViewComponent implements OnInit {
 
@@ -43,7 +45,7 @@ export class ListViewComponent implements OnInit {
 			this.items.push(<Item>{
 				template: templateKey,
 				data: `item ${idx+1}`,
-				locationId: adCount%2 === 1 ? 70919 : 70919
+				locationId: isIOS ? 44942 : 44941
 			});
 			idx++;
 		}

@@ -66,17 +66,24 @@ export class XzAdController extends XzAdControllerBase {
 	 * @param parentView
 	 */
 	public initNativeAd(parentView: View): this {
+		if( parentView == null ){
+			throw new Error("no parent view!");
+		}
 
 		let targetView = parentView.android as android.view.View;
 
 		this._tapTargetView = new WeakRef<android.view.View>( targetView );
 		this._adg = new com.socdm.d.adgeneration.ADG(android.context);
 
+
 		this._adg.setLocationId(""+ this.adItem.locationId);
 
 		// 広告の表示サイズを計算
 		let adWidth = mainScreen.widthDIPs;
-		adWidth -= (+parentView.style.paddingLeft + +parentView.style.paddingRight); // 余白考慮
+		// 余白の値が数値なら、数値に変換、数値出ない場合（"auto"など)は0として扱う
+		let pl = isNaN(+parentView.style.paddingLeft) ? 0 : +parentView.style.paddingLeft;
+		let pr = isNaN(+parentView.style.paddingRight) ? 0 : +parentView.style.paddingRight;
+		adWidth -= (pl+pr); // 余白を引いたサイズを広告領域の幅とする
 		let adHeight = (this.adItem.height / this.adItem.width) * adWidth;
 
 		// フリーサイズとしてバナーのサイズ設定
@@ -88,7 +95,6 @@ export class XzAdController extends XzAdControllerBase {
 
 		//// HTMLテンプレートを使用したネイティブ広告を表示のためにはaddViewする必要があります
 		(<any>targetView).addView(this._adg);
-
 
 		this._adg.start();
 
