@@ -6,7 +6,7 @@ import {
 	TemplateRef,
 	NgZone,
 	OnDestroy,
-	ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, OnChanges
+	ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges
 } from "@angular/core";
 import { isIOS, Page } from "tns-core-modules/ui/page";
 import { AdData, XzAdItem, NativeAdData } from "../../../xz-ad-common";
@@ -27,7 +27,7 @@ const DEFAULT_AD_HEIGHT = 100;
 	selector: "XzAdGLayout",
 	templateUrl: "./xz-ad-g-layout.component.html"
 })
-export class XzAdGLayoutComponent implements OnInit, OnDestroy {
+export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
 	@ViewChild("adContainer") adContainerRef: ElementRef;
 	@Input() locationId: number;
 	@Input() adWidth: number;
@@ -51,6 +51,14 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.dispose();
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if( "locationId" in changes ){
+			this.locationId = changes.locationId.currentValue;
+			this.dispose();
+			this.loadAd();
+		}
 	}
 
 	dispose(){

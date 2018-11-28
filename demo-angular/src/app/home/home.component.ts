@@ -22,4 +22,8 @@ export class HomeComponent implements OnInit {
 	onTapListViewSample(){
 		this.routerExt.navigate(["home/listview"]);
 	}
+
+	changeAd(){
+		this.nativeAdLocationId = 48635;
+	}
 }
