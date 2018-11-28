@@ -24,6 +24,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	changeAd(){
-		this.nativeAdLocationId = 48635;
+		this.nativeAdLocationId = this.nativeAdLocationId == 48635 ? 44942 : 48635;
 	}
 }

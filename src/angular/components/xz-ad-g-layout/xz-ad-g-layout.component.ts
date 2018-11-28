@@ -54,19 +54,24 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if( "locationId" in changes ){
-			this.locationId = changes.locationId.currentValue;
-			this.dispose();
-			this.loadAd();
+		if( "locationId" in changes && !changes.locationId.firstChange){
+			if( changes.locationId.currentValue ){
+				this.locationId = changes.locationId.currentValue;
+				this.dispose();
+				this.loadAd();
+			}
 		}
 	}
 
 	dispose(){
-		if ( this._adController ) {
+		if( this._adController ) {
+			this._adController.off("receiveNativeAd", this.onReceiveNativeAd, this);
+			this._adController.off("fail", this.onFailReceiveAd, this );
 			this._adController.dispose();
 		}
 		if( this.ad ){
 			this.ad.nativeAd = null;
+			this.ad = <NativeAdData>{};
 		}
 	}
 
