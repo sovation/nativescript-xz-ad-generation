@@ -23,18 +23,23 @@ const DEFAULT_AD_WIDTH = 320;
 const DEFAULT_AD_HEIGHT = 100;
 
 @Component({
-	moduleId: module.id,
 	selector: "XzAdGLayout",
-	templateUrl: "./xz-ad-g-layout.component.html"
+	template: `
+		<StackLayout #adContainer>
+			<ng-template [ngTemplateOutlet]="templateRef"
+	             [ngTemplateOutletContext]="{$implicit: ad}">
+			</ng-template>
+		</StackLayout>
+	`
 })
 export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
-	@ViewChild("adContainer") adContainerRef: ElementRef;
+	@ViewChild("adContainer", {static: false}) adContainerRef: ElementRef;
 	@Input() locationId: number;
 	@Input() adWidth: number;
 	@Input() adHeight: number;
 	@Input() id: number;
 	@Output() updateAd: EventEmitter<UpdateAdData> = new EventEmitter<UpdateAdData>();
-	@ContentChild(TemplateRef) templateRef;
+	@ContentChild(TemplateRef, {static: false}) templateRef;
 
 	adItem: XzAdItem;
 	ad: NativeAdData = <NativeAdData>{

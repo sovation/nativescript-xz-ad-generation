@@ -3,7 +3,6 @@ import { EventData } from "tns-core-modules/data/observable";
 import { NativeAdData } from "./xz-ad-common";
 import {View} from "tns-core-modules/ui/core/view";
 import {screen} from "tns-core-modules/platform";
-import mainScreen = screen.mainScreen;
 
 // iOS用の広告コントローラ
 export class XzAdController extends XzAdControllerBase {

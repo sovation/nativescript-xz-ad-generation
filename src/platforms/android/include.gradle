@@ -1,7 +1,10 @@
 repositories {
 	maven { url 'https://adgeneration.github.io/ADG-Android-SDK/repository' }
+	google()
 }
 
 dependencies {
 	compile 'com.socdm.d.adgeneration:adg:+'
+	compile 'com.google.android.gms:play-services-base:16.1.0'
+	compile 'com.google.android.gms:play-services-ads-identifier:16.0.0'
 }

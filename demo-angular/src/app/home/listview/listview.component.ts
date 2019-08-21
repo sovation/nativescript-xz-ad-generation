@@ -18,7 +18,7 @@ interface Item {
 export class ListViewComponent implements OnInit {
 
 	items: Item[] = [];
-	@ViewChild("listview") listviewRef: ElementRef;
+	@ViewChild("listview", {static: false}) listviewRef: ElementRef;
 
 	constructor() {
 	}

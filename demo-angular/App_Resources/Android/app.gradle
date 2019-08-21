@@ -5,6 +5,10 @@
 //	implementation 'com.android.support:recyclerview-v7:+'
 //}
 
+project.ext {
+    googlePlayServicesVersion = "16.0.0"
+}
+
 android {
   defaultConfig {
     generatedDensities = []
@@ -16,6 +20,4 @@ android {
 }
 
 dependencies {
-	compile 'com.google.android.gms:play-services-base:+'
-	compile 'com.google.android.gms:play-services-ads-identifier:+'
 }

@@ -10,7 +10,7 @@ import { isIOS } from "tns-core-modules/platform";
 })
 export class HomeComponent implements OnInit {
 
-	nativeAdLocationId: number = isIOS ? 44942 : 44941;
+	nativeAdLocationId: number = 48635;
 	nativeAdHtmlLocationId = isIOS ? 44942 : 44941;
 
 	constructor(private routerExt: RouterExtensions) {
