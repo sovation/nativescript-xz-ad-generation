@@ -3,7 +3,7 @@
 </ActionBar>
 
 <StackLayout>
-	<ScrollView>
+	<ScrollView height="100%">
 		<StackLayout class="page" paddingTop="16">
 			<Button text="ListView sample" (tap)="onTapListViewSample()"></Button>
 
@@ -11,19 +11,21 @@
 			<XzAdGBanner locationId="48547" bannerWidth="320" bannerHeight="50"></XzAdGBanner>
 
 			<Label text="native ad"></Label>
-			<XzAdGLayout [locationId]="nativeAdLocationId">
+			<XzAdGLayout [locationId]="nativeAdLocationId" [hideOnFail]="true">
 				<ng-template let-ad>
-					<GridLayout class="ad-container" columns="100 *" rows="auto">
-						<GridLayout rows="auto" col="0">
-							<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
-							<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
-						</GridLayout>
+					<StackLayout class="ad-container" orientation="vertical">
+						<GridLayout class="ad-container-nativead" columns="100 *" rows="auto">
+							<GridLayout rows="auto" col="0">
+								<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
+								<XzAdGInformationIconView *ngIf="ad.nativeAd" [nativeAd]="ad.nativeAd" verticalAlignment="top" horizontalAlignment="left"></XzAdGInformationIconView>
+							</GridLayout>
 
-						<StackLayout col="1">
-							<Label [text]="ad.title" textWrap="true"></Label>
-							<Label [text]="ad.sponsor" class="sponsor-name"></Label>
-						</StackLayout>
-					</GridLayout>
+							<StackLayout col="1">
+								<Label [text]="ad.title" textWrap="true"></Label>
+								<Label [text]="ad.sponsor" class="sponsor-name"></Label>
+							</StackLayout>
+						</GridLayout>
+					</StackLayout>
 				</ng-template>
 			</XzAdGLayout>
 			<Button (tap)="changeAd()" text="Change Ad"></Button>

@@ -1,3 +1,11 @@
 .ad-container {
-	padding: 16;
+	padding: 16 0;
+}
+
+.ad-container.no-ad {
+	height: 0;
+}
+
+.ad-container > .native-ad {
+	padding: 0 0;
 }

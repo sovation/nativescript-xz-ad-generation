@@ -32,4 +32,6 @@ export interface AdData extends EventData {
 
 export interface NativeAdData extends AdData {
 	nativeAd?: any; // ネイティブ側で返されたAdDataオブジェクト
+	isHTML?: boolean; // HTMLネイティブAdかどうか
+	loadFailed?: boolean; // 読み込み失敗したか
 }

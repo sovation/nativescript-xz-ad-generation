@@ -45,7 +45,7 @@ export class ListViewComponent implements OnInit {
 			this.items.push(<Item>{
 				template: templateKey,
 				data: `item ${idx+1}`,
-				locationId: isIOS ? 44942 : 44941
+				locationId: isIOS ? 48635 : 48635
 			});
 			idx++;
 		}
@@ -57,10 +57,6 @@ export class ListViewComponent implements OnInit {
 
 	onUpdateAd(data: UpdateAdData){
 		let item = this.items[ data.id ];
-
-		if( !data.adAvailable ){
-			item.template = "no-ad";
-		}
 		this.refreshItemAt(data.id);
 	}
 

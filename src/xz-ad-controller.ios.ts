@@ -1,8 +1,7 @@
 import { XzAdControllerBase } from "./xz-ad-controller-base";
 import { EventData } from "tns-core-modules/data/observable";
-import { NativeAdData } from "./xz-ad-common";
+import { NativeAdData, XzAdItem } from './xz-ad-common'
 import {View} from "tns-core-modules/ui/core/view";
-import {screen} from "tns-core-modules/platform";
 
 // iOS用の広告コントローラ
 export class XzAdController extends XzAdControllerBase {
@@ -62,7 +61,6 @@ export class XzAdController extends XzAdControllerBase {
 
 	// Viewを指定して初期化
 	public initWithView(view: UIView, viewHeight: number, viewWidth: number, scale: number): this {
-		console.log("init view...");
 		// バナーの種類ごとに初期化
 		if( this.adItem.type !== "banner" ){
 			return null;
@@ -108,33 +106,37 @@ export class XzAdController extends XzAdControllerBase {
 			object: null
 		};
 
-		if( ad.mainImage ){
-			adData.mainImageUrl = ad.mainImage.url;
-			adData.mainImageHeight = ad.mainImage.height;
-			adData.mainImageWidth = ad.mainImage.width;
-		}
+		if( ad ){
+			if( ad.mainImage ){
+				adData.mainImageUrl = ad.mainImage.url;
+				adData.mainImageHeight = ad.mainImage.height;
+				adData.mainImageWidth = ad.mainImage.width;
+			}
 
-		if( ad.iconImage ){
-			adData.iconImageUrl = ad.iconImage.url;
-			adData.iconImageHeight = ad.iconImage.height;
-			adData.iconImageWidth = ad.iconImage.width;
-		}
+			if( ad.iconImage ){
+				adData.iconImageUrl = ad.iconImage.url;
+				adData.iconImageHeight = ad.iconImage.height;
+				adData.iconImageWidth = ad.iconImage.width;
+			}
 
-		if( ad.desc ){
-			adData.description = ad.desc.value;
-		}
+			if( ad.desc ){
+				adData.description = ad.desc.value;
+			}
 
-		if( ad.title ){
-			adData.title = ad.title.text;
-		}
+			if( ad.title ){
+				adData.title = ad.title.text;
+			}
 
-		if( ad.sponsored ){
-			adData.sponsor = ad.sponsored.value;
-		}
-		adData.nativeAd = ad;
+			if( ad.sponsored ){
+				adData.sponsor = ad.sponsored.value;
+			}
+			adData.nativeAd = ad;
 
-		if( this._tapTargetView.get() ){
-			ad.setTapEvent(this._tapTargetView.get());
+			if( this._tapTargetView.get() ){
+				ad.setTapEvent(this._tapTargetView.get());
+			}
+		} else {
+			adData.isHTML = true;
 		}
 
 		this.notify(adData);
@@ -146,6 +148,10 @@ export class XzAdController extends XzAdControllerBase {
 			eventName: "fail",
 			object: null
 		});
+	}
+
+	getAdItem(): XzAdItem {
+		return this.adItem;
 	}
 
 }
@@ -163,9 +169,25 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 		return ins;
 	}
 
+	/**
+	 * 広告受信時
+	 * @param adgManagerViewController
+	 */
 	ADGManagerViewControllerReceiveAd(adgManagerViewController: ADGManagerViewController){
+		if( this._owner && this._owner.get() ){
+			const controller = this._owner.get();
+			// HTML型のネイティブ広告の場合
+			if( controller.getAdItem().type == 'native' ){
+				this._owner.get().onReceiveNativeAd(null);
+			}
+		}
 	}
 
+	/**
+	 * 広告受信失敗時
+	 * @param adgManagerViewController
+	 * @param code
+	 */
 	ADGManagerViewControllerFailedToReceiveAdCode?(adgManagerViewController: ADGManagerViewController, code: kADGErrorCode): void {
 
 		let failed = false;
@@ -187,10 +209,14 @@ class ADGManagerViewControllerDelegateImpl extends NSObject implements ADGManage
 
 	}
 
+	/**
+	 * ネイティブ広告の受信時
+	 * @param adgManagerViewController
+	 * @param mediationNativeAd
+	 */
 	ADGManagerViewControllerReceiveAdMediationNativeAd(adgManagerViewController: ADGManagerViewController, mediationNativeAd: any): void {
-
 		if( mediationNativeAd.isKindOfClass(ADGNativeAd.class()) ){
-			let nativeAd: ADGNativeAd = <ADGNativeAd>mediationNativeAd;
+			const nativeAd: ADGNativeAd = <ADGNativeAd>mediationNativeAd;
 			if( this._owner && this._owner.get() ){
 				this._owner.get().onReceiveNativeAd(nativeAd);
 			}

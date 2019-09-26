@@ -23,25 +23,39 @@ export class XzAdController extends XzAdControllerBase {
 	 * https://docs.nativescript.org/plugins/ui-plugin-custom
 	 */
 	private getAdListener(): any {
-		class AdListener extends (com.socdm.d.adgeneration.ADGListener as { new(): any; }) {
+		class AdListener extends com.socdm.d.adgeneration.ADGListener {
 
 			private _owner: WeakRef<XzAdController>;
 
-			onReceiveAd(o: any) {
-				if( o instanceof com.socdm.d.adgeneration.nativead.ADGNativeAd ){
-					let ad = o;
-					let controller = this._owner.get();
-					if( controller ){
-						controller.onReceiveAd(ad);
-					}
+			onReceiveAd(ad: any): void {
+				const controller = this._owner.get();
+
+				// AdGenerationのドキュメントではadオブジェクトの型を判定する処理が入っているが
+				// ただ、HTMLのNativeAdの場合には、adが空でonReceiveAdが呼ばれることが判明。
+				// したがって、ここで型判定はしないようにしている。
+				if( controller && controller.adItem.type === 'native' ){
+					controller.onReceiveAd(ad);
 				}
 			}
 
 			onFailedToReceiveAd(code: number){
-				console.log("fail loading ad!");
-				let controller = this._owner.get();
-				if( controller ){
-					controller.onFailed();
+				const controller = this._owner.get();
+				console.log("fail loading ad ... " + `code: ${code}`);
+
+				switch(code){
+					case com.socdm.d.adgeneration.ADGConsts.ADGErrorCode.EXCEED_LIMIT:
+					case com.socdm.d.adgeneration.ADGConsts.ADGErrorCode.NEED_CONNECTION:
+					case com.socdm.d.adgeneration.ADGConsts.ADGErrorCode.NO_AD:
+						if( controller ){
+							controller.onFailed();
+						}
+						return;
+				}
+
+				// それ以外はリトライ
+				if (controller) {
+					console.log('retry ... ');
+					controller.start();
 				}
 			}
 
@@ -75,7 +89,6 @@ export class XzAdController extends XzAdControllerBase {
 		this._tapTargetView = new WeakRef<android.view.View>( targetView );
 		this._adg = new com.socdm.d.adgeneration.ADG(android.context);
 
-
 		this._adg.setLocationId(""+ this.adItem.locationId);
 
 		// 広告の表示サイズを計算
@@ -91,7 +104,8 @@ export class XzAdController extends XzAdControllerBase {
 		this._adg.setAdFrameSize(adSize.setSize(adWidth, adHeight));
 		this._adg.setUsePartsResponse(true);
 		this._adg.setInformationIconViewDefault(false);
-		this._adg.setAdListener(this.getAdListener());
+		this._listener = this.getAdListener();
+		this._adg.setAdListener(this._listener);
 
 		//// HTMLテンプレートを使用したネイティブ広告を表示のためにはaddViewする必要があります
 		(<any>targetView).addView(this._adg);
@@ -136,6 +150,9 @@ export class XzAdController extends XzAdControllerBase {
 	}
 
 	public dispose(){
+		if( this._adg ){
+			this._adg.stop();
+		}
 		this._adg = null;
 		this._listener = null;
 	}
@@ -151,25 +168,33 @@ export class XzAdController extends XzAdControllerBase {
 			locationId: this.adItem.locationId
 		};
 
-		if( ad.getTitle() != null ){
-			data.title = ad.getTitle().getText();
+		if( ad ){
+			if( ad.getTitle() != null ){
+				data.title = ad.getTitle().getText();
+			}
+			if( ad.getMainImage() != null ){
+				data.mainImageUrl = ad.getMainImage().getUrl();
+			}
+			if( ad.getIconImage() != null ){
+				data.iconImageUrl = ad.getIconImage().getUrl();
+			}
+			if( ad.getDesc() != null ){
+				data.description = ad.getDesc().getValue();
+			}
+			if( ad.getSponsored() != null ){
+				data.sponsor = ad.getSponsored().getValue();
+			}
+			data.nativeAd = ad;
+		} else {
+			data.isHTML = true;
+
+			// サイズ調整
+			const targetView = this._tapTargetView.get();
+			targetView.getLayoutParams().height = this.adItem.height;
 		}
-		if( ad.getMainImage() != null ){
-			data.mainImageUrl = ad.getMainImage().getUrl();
-		}
-		if( ad.getIconImage() != null ){
-			data.iconImageUrl = ad.getIconImage().getUrl();
-		}
-		if( ad.getDesc() != null ){
-			data.description = ad.getDesc().getValue();
-		}
-		if( ad.getSponsored() != null ){
-			data.sponsor = ad.getSponsored().getValue();
-		}
-		data.nativeAd = ad;
 
 		// クリックイベント
-		if( this._tapTargetView.get() ){
+		if( !data.isHTML && this._tapTargetView.get() ){
 			let targetView = this._tapTargetView.get();
 			ad.setClickEvent(targetView.getContext(), targetView, null);
 		}

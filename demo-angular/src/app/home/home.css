@@ -1,5 +1,9 @@
 .ad-container {
-	padding: 16 16;
+	padding: 16 0;
+}
+
+.ad-container-nativead {
+	padding: 0 16;
 }
 
 .sponsor-name {

@@ -8,11 +8,12 @@ import {
 	OnDestroy,
 	ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges
 } from "@angular/core";
-import { isIOS, Page } from "tns-core-modules/ui/page";
+import { isAndroid, isIOS, Page } from 'tns-core-modules/ui/page'
 import { AdData, XzAdItem, NativeAdData } from "../../../xz-ad-common";
 import { XzAdController } from "../../../xz-ad-controller";
 import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
 import { EventData } from "tns-core-modules/data/observable";
+import { first } from 'rxjs/operators'
 
 export interface UpdateAdData extends EventData {
 	id: number;
@@ -25,11 +26,11 @@ const DEFAULT_AD_HEIGHT = 100;
 @Component({
 	selector: "XzAdGLayout",
 	template: `
-		<StackLayout #adContainer>
+		<GridLayout #adContainer>
 			<ng-template [ngTemplateOutlet]="templateRef"
 	             [ngTemplateOutletContext]="{$implicit: ad}">
 			</ng-template>
-		</StackLayout>
+		</GridLayout>
 	`
 })
 export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
@@ -38,6 +39,7 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
 	@Input() adWidth: number;
 	@Input() adHeight: number;
 	@Input() id: number;
+	@Input() hideOnFail: boolean;
 	@Output() updateAd: EventEmitter<UpdateAdData> = new EventEmitter<UpdateAdData>();
 	@ContentChild(TemplateRef, {static: false}) templateRef;
 
@@ -112,6 +114,26 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
 		this.ngZone.run(() => {
 			this.ad = data;
 
+			// 失敗時にビューを隠す設定の場合
+			if( this.hideOnFail ){
+				const view = this.adContainerRef.nativeElement as StackLayout;
+				view.height = 'auto';
+			}
+
+			// HTMLアドの場合は、ビューサイズの調整が必要
+			if( this.adHeight && this.ad.isHTML ){
+				const view = this.adContainerRef.nativeElement as StackLayout;
+				const firstView = view.getChildAt(0);
+				if( isIOS ){
+					// 広告縦サイズ＋下余白を新しいサイズとして設定（上余白は設定しなくても自動で入る)
+					const paddingBottom = isNaN(+firstView.style.paddingBottom) ? 0 : +firstView.style.paddingBottom;
+					firstView.height = this.adHeight + paddingBottom;
+				} else {
+					// Android
+					firstView.height = this.adHeight;
+				}
+			}
+
 			// Notify to parent component
 			this.updateAd.emit({
 				id: this.id,
@@ -127,7 +149,15 @@ export class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChanges {
 	 */
 	onFailReceiveAd(){
 		this.ngZone.run( () => {
-			this.ad = <NativeAdData>{};
+			this.ad = <NativeAdData>{
+				loadFailed: true
+			};
+
+			// 失敗時にビューを隠す設定の場合
+			if( this.hideOnFail ){
+				const view = this.adContainerRef.nativeElement as StackLayout;
+				view.height = 0;
+			}
 
 			// Notify to parent component
 			this.updateAd.emit({

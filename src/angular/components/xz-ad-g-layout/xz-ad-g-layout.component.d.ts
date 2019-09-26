@@ -1,5 +1,5 @@
 import { OnInit, NgZone, OnDestroy, ElementRef, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
-import { Page } from "tns-core-modules/ui/page";
+import { Page } from 'tns-core-modules/ui/page';
 import { XzAdItem, NativeAdData } from "../../../xz-ad-common";
 import { EventData } from "tns-core-modules/data/observable";
 export interface UpdateAdData extends EventData {
@@ -14,6 +14,7 @@ export declare class XzAdGLayoutComponent implements OnInit, OnDestroy, OnChange
     adWidth: number;
     adHeight: number;
     id: number;
+    hideOnFail: boolean;
     updateAd: EventEmitter<UpdateAdData>;
     templateRef: any;
     adItem: XzAdItem;

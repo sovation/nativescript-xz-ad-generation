@@ -3,7 +3,7 @@
 </ActionBar>
 
 <GridLayout rows="*">
-	<ListView [items]="items" [itemTemplateSelector]="templateSelector" #listview>
+	<ListView [items]="items" [itemTemplateSelector]="templateSelector" #listview height="100%">
 		<ng-template nsTemplateKey="item" let-item="item">
 			<StackLayout>
 				<Label text="{{ item.data }}" padding="16"></Label>
@@ -12,10 +12,10 @@
 
 		<ng-template nsTemplateKey="ad" let-item="item" let-index="index">
 			<StackLayout>
-				<XzAdGLayout [locationId]="item.locationId" (updateAd)="onUpdateAd($event)" [id]="index" [adWidth]="320" [adHeight]="50">
+				<XzAdGLayout [locationId]="item.locationId" (updateAd)="onUpdateAd($event)" [id]="index" [adWidth]="320" [adHeight]="100" [hideOnFail]="true">
 					<ng-template let-ad>
 						<GridLayout class="ad-container">
-							<GridLayout columns="100 *" rows="100">
+							<GridLayout class="native-ad" columns="100 *">
 								<GridLayout rows="auto" col="0">
 									<Image src="{{ ad.iconImageUrl ? ad.iconImageUrl : ad.mainImageUrl }}" width="100" height="100"></Image>
 								</GridLayout>
@@ -35,8 +35,5 @@
 			</StackLayout>
 		</ng-template>
 
-		<ng-template nsTemplateKey="no-ad">
-			<StackLayout></StackLayout>
-		</ng-template>
 	</ListView>
 </GridLayout>
